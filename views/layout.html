@@ -1,2 +1,25 @@
 
 
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Acme!!!!!!</title>
+	<link rel="stylesheet"  href="/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<h1>Acme Users and Departments</h1>
+<div class="col-sm-5">
+	<div class='well'>
+		{% block dept %}
+		{% endblock %}
+	</div>
+</div>
+<div class="col-sm-5">
+	<div class='well'>
+		{% block user %}
+		{% endblock %}
+	</div>
+</div>
+
+</body>
+</html>

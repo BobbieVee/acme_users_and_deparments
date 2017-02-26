@@ -1,0 +1,50 @@
+
+{% extends "layout.html" %}
+
+{% block dept %}
+<div class='well'>
+	<form method="Post" action="/depts">
+		<label name='name'>Department Name</label>
+		<input type="text" name="name">
+		<button class='btn btn-primary'>Add</button>
+
+	</form>
+</div>
+<h4>Departments:</h4>
+<ul class="list-group">
+{% for dept in depts %}
+	<li class="list-group-item" >
+
+	{{dept.name}} ({{dept.id}})
+	<form action="/depts/{{dept.id}}?_method=delete" method="POST">
+		<button class='btn btn-danger'>Delete</button>
+	</form> 
+
+	</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
+
+
+{% block user %}
+<div class='well'>
+	<form method='post' action='/users'>
+		<label name='name'>User Name</label>
+		<input type="text" name="name">
+		<button class='btn btn-primary'>Add</button>
+
+	</form>
+</div>	
+<h4>Users:</h4>
+<ul class="list-group">
+{% for user in users %}
+	<li class="list-group-item" >
+	{{user.name}} ({{user.id}})
+	<form action="/users/{{user.id}}?_method=delete" method="POST">
+		<button class='btn btn-danger'>Delete</button>
+	</form> 
+	</li>
+{% endfor %}
+</ul>
+{% endblock %}
