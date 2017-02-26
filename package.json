@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "NOCACHE=true DATABASE_URL=postgres://localhost/acme_users_and_deparments nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^1.1.3",
+    "nunjucks": "^3.0.0",
     "pg": "^6.1.2",
     "sequelize": "^3.30.2"
   }
