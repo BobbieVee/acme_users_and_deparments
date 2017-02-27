@@ -30,6 +30,7 @@ const UserDepartment = db.define('user_department', {});
 User.hasMany(UserDepartment);
 Department.hasMany(UserDepartment);
 UserDepartment.belongsTo(Department); 
+UserDepartment.belongsTo(User);
 
 const sync = () => db.sync({force: true});
 

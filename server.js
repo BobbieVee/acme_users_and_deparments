@@ -52,6 +52,7 @@ app.get('/', (req, res, next)=> {
 			
 app.get('/users/:id', (req, res, next)=> {
 	console.log('id = ', req.params.id)
+	let user;
 	User.findById(req.params.id, {
 		include: [
 			{
@@ -60,10 +61,36 @@ app.get('/users/:id', (req, res, next)=> {
 			}
 		] 
 	})
-	.then((user)=> {
-		console.log('user = ', user);
-		res.render('user', {user: user})
+	.then((_user)=> {
+		user=_user;
+		return Dept.findAll({include: [
+				{model: UserDepartment,
+					include: [User]
+				}
+			]
+		}
+		)
+		// console.log('user = ', user);
+		
 	})
+	.then((depts)=> {
+		// console.log('depts = ', depts)
+		// console.log('gooddepts = ', user.getDepartments())
+		let deptIdBelong = user.getDepartments().map(function(dept){
+			return dept.id*1;
+		})
+		let deptsNoBelong = depts.filter(function(dept){
+			// console.log('dept.id = ', dept.id)
+			// console.log('index of array = ', deptIdBelong.indexOf(dept.id))
+			if (deptIdBelong.indexOf(dept.id) === -1)
+				{return dept.id}
+			
+		});
+		// console.log('deptsBelong = ', deptsBelong)
+		// console.log('deptIdNoBelong = ', deptIdNoBelong)
+		res.render('user', {user: user, depts: depts, deptsnobelong: deptsNoBelong})
+	})
+	.catch(next);
 })
 
 	

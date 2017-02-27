@@ -1,61 +1,72 @@
 
 {% extends "layout.html" %}
 
-{% block dept %}
-<div class='well'>
-	<form method="Post" action="/depts">
-		<label name='name'>Department Name</label>
-		<input type="text" name="name">
-		<button class='btn btn-primary'>Add</button>
+{% block content %}
+<div class="col-sm-5">
+	<div class='well'>
+		<div class='well'>
+			<form method="Post" action="/depts">
+				<label name='name'>Department Name</label>
+				<input type="text" name="name">
+				<button class='btn btn-primary'>Add</button>
 
+			</form>
+		</div>
+		<h4>Departments:</h4>
+		<ul class="list-group">
+		{% for dept in depts %}
+			<li class="list-group-item" >
+
+			{{dept.name}} ({{dept.id}})
+			<form action="/depts/{{dept.id}}?_method=delete" method="POST">
+				<button class='btn btn-danger'>Delete</button>
+			</form> 
+
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+
+
+
+
+
+<div class="col-sm-5">
+	<div class='well'>
+		<div class='well'>
+			<form method='post' action='/users'>
+				<label name='name'>User Name</label>
+				<input type="text" name="name">
+				<button class='btn btn-primary'>Add</button>
+
+			</form>
+		</div>	
+		<h4>Users:</h4>
+		<ul class="list-group">
+		{% for user in users %}
+			<li class="list-group-item" style='margin-bottom: 10px' >
+			<a href="/users/{{user.id}}">
+			<h4>{{user.name}} </h4></a>
+			<br> <h5>Belongs to:</h5> 
+			 
+			
+			<ul class='list-group'>
+					{% for dept in user.getDepartments() %}
+					<li class='list-group-item'>{{dept.name}}</li>
+					{% endfor %}
+			</ul>
+			
+			<form action="/users/{{user.id}}?_method=delete" method="POST">
+				<button class='btn btn-danger'>Delete User</button>
+			</form> 
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+	<form action="/seed/" >
+		<button>Seed</button>
 	</form>
 </div>
-<h4>Departments:</h4>
-<ul class="list-group">
-{% for dept in depts %}
-	<li class="list-group-item" >
 
-	{{dept.name}} ({{dept.id}})
-	<form action="/depts/{{dept.id}}?_method=delete" method="POST">
-		<button class='btn btn-danger'>Delete</button>
-	</form> 
-
-	</li>
-{% endfor %}
-</ul>
-
-{% endblock %}
-
-
-
-{% block user %}
-<div class='well'>
-	<form method='post' action='/users'>
-		<label name='name'>User Name</label>
-		<input type="text" name="name">
-		<button class='btn btn-primary'>Add</button>
-
-	</form>
-</div>	
-<h4>Users:</h4>
-<ul class="list-group">
-{% for user in users %}
-	<li class="list-group-item" style='margin-bottom: 10px' >
-	<a href="/users/{{user.id}}">
-	<h4>{{user.name}} </h4></a>
-	<br> <h5>Belongs to:</h5> 
-	 
-	
-	<ul class='list-group'>
-			{% for dept in user.getDepartments() %}
-			<li class='list-group-item'>{{dept.name}}</li>
-			{% endfor %}
-	</ul>
-	
-	<form action="/users/{{user.id}}?_method=delete" method="POST">
-		<button class='btn btn-danger'>Delete User</button>
-	</form> 
-	</li>
-{% endfor %}
-</ul>
 {% endblock %}

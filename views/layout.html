@@ -7,22 +7,11 @@
 	<link rel="stylesheet"  href="/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
-<h1>Acme Users and Departments</h1>
-<div class="col-sm-5">
-	<div class='well'>
-		{% block dept %}
-		{% endblock %}
-	</div>
-</div>
-<div class="col-sm-5">
-	<div class='well'>
-		{% block user %}
-		{% endblock %}
-	</div>
-	<form action="/seed/" >
-		<button>Seed</button>
-	</form>
-</div>
+<a href="/"><h1>Acme Users and Departments</h1></a>
+
+{% block content %}
+
+{% endblock%}
 
 </body>
 </html>
