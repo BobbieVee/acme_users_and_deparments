@@ -27,6 +27,7 @@
 {% endblock %}
 
 
+
 {% block user %}
 <div class='well'>
 	<form method='post' action='/users'>
@@ -39,10 +40,20 @@
 <h4>Users:</h4>
 <ul class="list-group">
 {% for user in users %}
-	<li class="list-group-item" >
-	{{user.name}} ({{user.id}})
+	<li class="list-group-item" style='margin-bottom: 10px' >
+	<a href="/users/{{user.id}}">
+	<h4>{{user.name}} </h4></a>
+	<br> <h5>Belongs to:</h5> 
+	 
+	
+	<ul class='list-group'>
+			{% for dept in user.getDepartments() %}
+			<li class='list-group-item'>{{dept.name}}</li>
+			{% endfor %}
+	</ul>
+	
 	<form action="/users/{{user.id}}?_method=delete" method="POST">
-		<button class='btn btn-danger'>Delete</button>
+		<button class='btn btn-danger'>Delete User</button>
 	</form> 
 	</li>
 {% endfor %}

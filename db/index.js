@@ -5,7 +5,21 @@ const Sequelize = db.Sequelize;
 
 const User = db.define('user', {
 	name: Sequelize.STRING
-});
+}, {
+	instanceMethods: {
+		getDepartments: function(){
+			let depts =[];
+			// console.log("***test = ", this)
+			// return UserDepartment.findAll({where: {userId: this.id}
+			this.user_departments.forEach(function(dept){
+				depts.push(dept.department.get())
+			});
+			return depts;		;	
+			}
+	
+		}
+	}
+);
 
 const Department = db.define('department', {
 	name: Sequelize.STRING
@@ -15,15 +29,15 @@ const UserDepartment = db.define('user_department', {});
 
 User.hasMany(UserDepartment);
 Department.hasMany(UserDepartment);
-UserDepartment.belongsTo(User);
-UserDepartment.belongsTo(Department);
-
-
+UserDepartment.belongsTo(Department); 
 
 const sync = () => db.sync({force: true});
 
+
+
 const seed = () => {
-	sync()
+	let _Watson;
+	return sync()
 	.then(()=> {
 		console.log(chalk.blue('Synched, Baby!'));
 		return Promise.all([
@@ -35,12 +49,7 @@ const seed = () => {
 			}),
 			User.create({
 				name: 'Bobby'
-			})
-
-		]);
-	}) 
-	.then(()=>{
-		return Promise.all([
+			}),
 			Department.create({
 				name: 'HR'
 			}),
@@ -50,45 +59,45 @@ const seed = () => {
 			Department.create({
 				name: 'IT'
 			})
-
-		])
-	})
-	.then(()=> {
+		]);
+	}) 
+	.spread((Watson, Sherlock, Bobby, HR, Sales, IT)=>{
+		_Watson = Watson;
 		return Promise.all([
-			UserDepartment.create({
-				userId: 1,
-				departmentId: 1	
-			}),
-			UserDepartment.create({
-				userId: 1,
-				departmentId: 2	
-			}),
-			UserDepartment.create({
-				userId: 2,
-				departmentId: 1	
-			}),
-			UserDepartment.create({
-				userId: 3,
-				departmentId: 1	
-			}),
-			UserDepartment.create({
-				userId: 3,
-				departmentId: 3	
-			})
+			UserDepartment.create({userId: Watson.id, departmentId: HR.id}),
+			UserDepartment.create({userId: Watson.id, departmentId: Sales.id}),
+			UserDepartment.create({userId: Sherlock.id, departmentId: HR.id}),
+			UserDepartment.create({userId: Bobby.id, departmentId: HR.id}),
+			UserDepartment.create({userId: Bobby.id, departmentId: IT.id})
+		]);
+	}) 
+	
+	.then((result)=> {
+		console.log(chalk.blue('Synched and seeded!!!!'));
+		return User.findById( _Watson.id, {
+			include: [{
+				model: UserDepartment, 
+				include: [ Department ]
+			} ]
+		})
 
-		])
+		
 	})
-	.then(()=> {
-
-		console.log(chalk.blue('Seeded, too.  oh!'));
-}) 
-	.catch(e => console.log(e));
-}
+	.then((user)=> {
+		// console.log('user = ', user.user_departments[0].department.get())
+		// console.log('user.getDepartments = ', user.getDepartments());
+	})
+	.catch((err)=> {
+		console.log(err);
+	});
+	
+};
 
 module.exports = {
 	models: {
 		User,
-		Department
+		Department,
+		UserDepartment
 	},
 	seed,
 	sync

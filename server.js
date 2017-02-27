@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const path = require('path');
 const User = db.models.User;
 const Dept = db.models.Department;
+const UserDepartment = db.models.UserDepartment;
 
 const noCache = process.env.NOCACHE || false;
 
@@ -20,17 +21,53 @@ app.use(BodyParser.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
 
 
-app.get('/', (req, res, next)=> {
+app.get('/seed/', (req, res, next)=> {
+	db.seed()
+	.then(()=> res.redirect('/'))
+	.catch(next);
+});
+
+app.get('/', (req, res, next)=> {	
 	let depts;
+	let users;
 	Dept.findAll()
 	.then((_depts)=> {
 		depts = _depts;
-		return User.findAll()
+		return User.findAll({
+			include: [{
+				model: UserDepartment, 
+				include: [ Dept ]
+			} ]
+		});
 	})
-	.then((users)=> {
+	.then((_users)=> {
+		users = _users;
+		// return UserDepartment.findAll({include: [User]}	)
+	// })
+	// .then((userDepts) => {
+		// console.log('users = ', users[0].user_departments[0].department.get())
 		res.render("index", {users: users, depts: depts});
 	})
-	.catch(next);
+	.catch(e => console.log(e));
+			
+app.get('/users/:id', (req, res, next)=> {
+	console.log('id = ', req.params.id)
+	User.findById(req.params.id, {
+		include: [
+			{
+				model: UserDepartment, 
+				include: [ Dept ]
+			}
+		] 
+	})
+	.then((user)=> {
+		console.log('user = ', user);
+		res.render('user', {user: user})
+	})
+})
+
+	
+	
 	
 });
 
