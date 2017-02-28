@@ -8,16 +8,13 @@ const User = db.define('user', {
 	instanceMethods: {
 		getDepartments: function(){
 			let depts =[];
-			// console.log("***test = ", this)
-			// return UserDepartment.findAll({where: {userId: this.id}
 			this.user_departments.forEach(function(dept){
 				depts.push(dept.department.get());
 			});
 			return depts;	
-			}
 		}
 	}
-);
+});
 
 const Department = db.define('department', {
 	name: Sequelize.STRING
@@ -86,6 +83,18 @@ const getAll = ()=> {
 	})
 	.then((_users)=> {
 		users = _users;
+		users.forEach(function(user) {
+			if (user.getDepartments().length === 0) {
+				user.color = "cyan";
+				user.noDept = true;
+
+			} else if (user.getDepartments().length === depts.length) {
+				user.color = "gold";
+				user.everyDept = true;
+			} else {
+				user.color = '';
+			}
+		});
 		return {'users': users, 'depts': depts};
 	});
 };
@@ -122,8 +131,8 @@ const seed = () => {
 		_Watson = Watson;
 		return Promise.all([
 			UserDepartment.create({userId: Watson.id, departmentId: HR.id}),
+			UserDepartment.create({userId: Watson.id, departmentId: IT.id}),
 			UserDepartment.create({userId: Watson.id, departmentId: Sales.id}),
-			UserDepartment.create({userId: Sherlock.id, departmentId: HR.id}),
 			UserDepartment.create({userId: Bobby.id, departmentId: HR.id}),
 			UserDepartment.create({userId: Bobby.id, departmentId: IT.id})
 		]);
