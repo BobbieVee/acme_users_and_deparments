@@ -31,10 +31,6 @@
 	</form>
 </div>
 
-
-
-
-
 <div class="col-sm-5">
 	<div class='well'>
 		<div class='well'>
@@ -50,16 +46,13 @@
 		{% for user in users %}
 			<li class="list-group-item" style='margin-bottom: 10px' >
 			<a href="/users/{{user.id}}">
-			<h4>{{user.name}} </h4></a>
+			<h4>{{user.name}} <small style="color: blue">(edit)</small></h4></a>
 			<br> <h5>Belongs to:</h5> 
-			 
-			
 			<ul class='list-group'>
 					{% for dept in user.getDepartments() %}
 					<li class='list-group-item'>{{dept.name}}</li>
 					{% endfor %}
 			</ul>
-			
 			<form action="/users/{{user.id}}?_method=delete" method="POST">
 				<button class='btn btn-danger'>Delete User</button>
 			</form> 

@@ -2,7 +2,6 @@ const db = require('./db')
 const chalk = require('chalk');
 const Sequelize = db.Sequelize;
 
-
 const User = db.define('user', {
 	name: Sequelize.STRING
 }, {
@@ -16,7 +15,6 @@ const User = db.define('user', {
 			});
 			return depts;		;	
 			}
-	
 		}
 	}
 );
@@ -32,9 +30,68 @@ Department.hasMany(UserDepartment);
 UserDepartment.belongsTo(Department); 
 UserDepartment.belongsTo(User);
 
+
+const getUser = (id)=> {
+	let user;
+	return User.findById(id, {
+		include: [
+			{
+				model: UserDepartment, 
+				include: [ Department ]
+			}
+		] 
+	})
+	.then((_user)=> {
+		user=_user;
+		return Department.findAll({include: [
+				{model: UserDepartment,
+					include: [User]
+				}
+			]
+		}
+		)	
+	})
+	.then((depts)=> {
+		let deptIdBelong = user.getDepartments().map(function(dept){
+			return dept.id*1;
+		})
+		let deptsNoBelong = depts.filter(function(dept){
+			if (deptIdBelong.indexOf(dept.id) === -1)
+				{return dept.id}
+		});
+		let color, everyDept, noDept;
+		if ( deptsNoBelong.length === 0){
+			color = 'gold';
+			everyDept = true;
+		}
+		if ( deptIdBelong.length === 0 ){
+			color = 'Cyan';
+			noDept = true;
+		}
+		return {'user': user, "depts": depts, "deptsnobelong": deptsNoBelong, "color": color, "everyDept": everyDept, "noDept": noDept};
+	});
+};
+
+const getAll = ()=> {
+	let depts;
+	let users;
+	return Department.findAll()
+	.then((_depts)=> {
+		depts = _depts;
+		return User.findAll({
+			include: [{
+				model: UserDepartment, 
+				include: [ Department ]
+			} ]
+		});
+	})
+	.then((_users)=> {
+		users = _users;
+		return {'users': users, 'depts': depts}
+	});
+};
+
 const sync = () => db.sync({force: true});
-
-
 
 const seed = () => {
 	let _Watson;
@@ -81,17 +138,12 @@ const seed = () => {
 				include: [ Department ]
 			} ]
 		})
-
-		
 	})
 	.then((user)=> {
-		// console.log('user = ', user.user_departments[0].department.get())
-		// console.log('user.getDepartments = ', user.getDepartments());
 	})
 	.catch((err)=> {
 		console.log(err);
 	});
-	
 };
 
 module.exports = {
@@ -101,7 +153,9 @@ module.exports = {
 		UserDepartment
 	},
 	seed,
-	sync
+	sync, 
+	getUser,
+	getAll
 };
 
 

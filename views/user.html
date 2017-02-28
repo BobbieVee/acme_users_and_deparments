@@ -2,8 +2,20 @@
 
 {% block content %}
 <div class="col-sm-5">
-<div class='well'>
-	<h2>User: {{ user.name }} </h2>
+<div class='well' style="background-color: {{color}}">
+
+	<h2>User: {{ user.name }} 
+	<small style='color: red'>
+		{% if everyDept  %}
+		Belongs to All Deparments!
+		{% endif %}
+		{% if noDept  %}
+		Belongs to No Deparments!
+		{% endif %}
+	</small>
+	</h2>
+	
+
 	{% for dept in user.getDepartments() %}
 		<li class='list-group-item'>{{dept.name}}
 			<form method='post' action="/users/{{user.id}}/department/{{dept.id}}?_method=delete">
