@@ -11,9 +11,9 @@ const User = db.define('user', {
 			// console.log("***test = ", this)
 			// return UserDepartment.findAll({where: {userId: this.id}
 			this.user_departments.forEach(function(dept){
-				depts.push(dept.department.get())
+				depts.push(dept.department.get());
 			});
-			return depts;		;	
+			return depts;	
 			}
 		}
 	}
@@ -48,8 +48,7 @@ const getUser = (id)=> {
 					include: [User]
 				}
 			]
-		}
-		)	
+		});	
 	})
 	.then((depts)=> {
 		let deptIdBelong = user.getDepartments().map(function(dept){
@@ -87,7 +86,7 @@ const getAll = ()=> {
 	})
 	.then((_users)=> {
 		users = _users;
-		return {'users': users, 'depts': depts}
+		return {'users': users, 'depts': depts};
 	});
 };
 
@@ -137,7 +136,7 @@ const seed = () => {
 				model: UserDepartment, 
 				include: [ Department ]
 			} ]
-		})
+		});
 	})
 	.then((user)=> {
 	})

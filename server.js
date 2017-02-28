@@ -4,6 +4,8 @@ const db = require('./db');
 const nunjucks = require('nunjucks');
 const BodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const routesUsers = require('./routes/users');
+const routesDepartments = require('./routes/departments');
 
 
 const path = require('path');
@@ -33,58 +35,10 @@ app.get('/', (req, res, next)=> {
 	})	
 	.catch(next);
 });
+
+app.use('/users', routesUsers);
+app.use('/depts', routesDepartments);
 			
-app.get('/users/:id', (req, res, next)=> {
-	db.getUser(req.params.id)
-	.then((user)=> {
-		res.render('user', user)
-	})
-	.catch(next);
-});
-
-app.post('/users', (req, res, next)=> {
-	User.findOrCreate({where: {name: req.body.name }})
-	.then(()=> res.redirect('/'))
-	.catch(next);
-});
-
-app.delete('/users/:id', (req, res, next)=> {
-	UserDepartment.destroy({where: {userId: req.params.id}})
-	.then(()=> {
-		return User.destroy({where: {id: req.params.id}})
-	})	
-	.then(()=> res.redirect('/'))
-	.catch(next);
-});
-
-app.post('/users/:userId/department/:deptId', ((req, res, next)=> {
-	UserDepartment.create({userId: req.params.userId, departmentId: req.params.deptId})
-	.then(()=> res.redirect('/users/' + req.params.userId))
-	.catch(next);
-}));
-
-app.delete('/users/:userId/department/:deptId', ((req, res, next)=> {
-	UserDepartment.destroy({where: {userId: req.params.userId, departmentId: req.params.deptId}})
-	.then(()=> res.redirect('/users/' + req.params.userId))
-	.catch(next);
-}));
-
-app.post('/depts', (req, res, next)=> {
-	Dept.findOrCreate({where: {name: req.body.name }})
-	.then(()=> res.redirect('/'))
-	.catch(next);
-});
-
-app.delete('/depts/:id',(req, res, next)=>{
-	UserDepartment.destroy({where: {departmentId: req.params.id}})
-	.then(()=> {
-		return Dept.destroy({where: {id: req.params.id}});	
-	})
-	.then(()=> res.redirect('/'))
-	.catch(next);
-});
-
-
 const port = process.env.PORT || 3001;
 
 app.listen(port, ()=> console.log(`Listening on port ${port}`))
