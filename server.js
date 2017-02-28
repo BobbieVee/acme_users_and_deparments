@@ -42,6 +42,8 @@ app.get('/', (req, res, next)=> {
 	})
 	.then((_users)=> {
 		users = _users;
+		console.log("****users = ", users)
+
 		// return UserDepartment.findAll({include: [User]}	)
 	// })
 	// .then((userDepts) => {
@@ -98,17 +100,34 @@ app.get('/users/:id', (req, res, next)=> {
 	
 });
 
+
+
 app.post('/users', (req, res, next)=> {
 	User.findOrCreate({where: {name: req.body.name }})
 	.then(()=> res.redirect('/'))
 	.catch(next);
 });
 
-app.delete('/users/:id',(req, res, next)=>{
-	User.destroy({where: {id: req.params.id}})
+app.delete('/users/:id', (req, res, next)=> {
+	UserDepartment.destroy({where: {userId: req.params.id}})
+	.then(()=> {
+		return User.destroy({where: {id: req.params.id}})
+	})	
 	.then(()=> res.redirect('/'))
 	.catch(next);
 });
+
+app.post('/users/:userId/department/:deptId', ((req, res, next)=> {
+	UserDepartment.create({userId: req.params.userId, departmentId: req.params.deptId})
+	.then(()=> res.redirect('/users/' + req.params.userId))
+	.catch(next);
+}));
+
+app.delete('/users/:userId/department/:deptId', ((req, res, next)=> {
+	UserDepartment.destroy({where: {userId: req.params.userId, departmentId: req.params.deptId}})
+	.then(()=> res.redirect('/users/' + req.params.userId))
+	.catch(next);
+}));
 
 app.post('/depts', (req, res, next)=> {
 	Dept.findOrCreate({where: {name: req.body.name }})
@@ -117,7 +136,10 @@ app.post('/depts', (req, res, next)=> {
 });
 
 app.delete('/depts/:id',(req, res, next)=>{
-	Dept.destroy({where: {id: req.params.id}})
+	UserDepartment.destroy({where: {departmentId: req.params.id}})
+	.then(()=> {
+		return Dept.destroy({where: {id: req.params.id}});	
+	})
 	.then(()=> res.redirect('/'))
 	.catch(next);
 });

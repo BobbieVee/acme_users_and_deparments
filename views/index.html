@@ -17,7 +17,7 @@
 		{% for dept in depts %}
 			<li class="list-group-item" >
 
-			{{dept.name}} ({{dept.id}})
+			{{dept.name}} 
 			<form action="/depts/{{dept.id}}?_method=delete" method="POST">
 				<button class='btn btn-danger'>Delete</button>
 			</form> 
@@ -26,6 +26,9 @@
 		{% endfor %}
 		</ul>
 	</div>
+	<form action="/seed/" >
+		<button>Seed</button>
+	</form>
 </div>
 
 
@@ -64,9 +67,6 @@
 		{% endfor %}
 		</ul>
 	</div>
-	<form action="/seed/" >
-		<button>Seed</button>
-	</form>
 </div>
 
 {% endblock %}

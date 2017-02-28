@@ -1,18 +1,19 @@
 {% extends 'layout.html'%}
 
 {% block content %}
+<div class="col-sm-5">
 <div class='well'>
 	<h2>User: {{ user.name }} </h2>
 	{% for dept in user.getDepartments() %}
 		<li class='list-group-item'>{{dept.name}}
-			<form>
+			<form method='post' action="/users/{{user.id}}/department/{{dept.id}}?_method=delete">
 				<button class='btn btn-danger'>Remove</button>
 			</form>
 		</li>
 	{% endfor %}
 	{% for dept in deptsnobelong %}
 		<li class='list-group-item'>{{dept.name}}
-		<form>
+		<form method='post' action="/users/{{user.id}}/department/{{dept.id}}">
 			<button class='btn btn-success' >Join</button>
 		</form>
 		</li>
@@ -22,6 +23,7 @@
 <form action="/seed/" >
 	<button>Seed</button>
 </form>
+</div>
 
 
 {% endblock %}
