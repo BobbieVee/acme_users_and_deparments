@@ -12,7 +12,7 @@ app.post('/', (req, res, next)=> {
 app.get('/:id', (req, res, next)=> {
 	db.getUser(req.params.id)
 	.then((user)=> {
-		res.render('user', user)
+		res.render('user', user);//semi colons
 	})
 	.catch(next);
 });
@@ -20,18 +20,20 @@ app.get('/:id', (req, res, next)=> {
 app.delete('/:id', (req, res, next)=> {
 	UserDepartment.destroy({where: {userId: req.params.id}})
 	.then(()=> {
-		return User.destroy({where: {id: req.params.id}})
+		return User.destroy({where: {id: req.params.id}});
 	})	
 	.then(()=> res.redirect('/'))
 	.catch(next);
 });
 
+//restful routes /:userId/user_departments (you can pass departmentId as a form parameter
 app.post('/:userId/department/:deptId', ((req, res, next)=> {
 	UserDepartment.create({userId: req.params.userId, departmentId: req.params.deptId})
 	.then(()=> res.redirect('/users/' + req.params.userId))
 	.catch(next);
 }));
 
+//restful routes /:userId/user_departments/:userDepartmentId
 app.delete('/:userId/department/:deptId', ((req, res, next)=> {
 	UserDepartment.destroy({where: {userId: req.params.userId, departmentId: req.params.deptId}})
 	.then(()=> res.redirect('/users/' + req.params.userId))

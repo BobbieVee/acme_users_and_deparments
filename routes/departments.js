@@ -11,6 +11,7 @@ app.post('/', (req, res, next)=> {
 });
 
 app.delete('/:id',(req, res, next)=>{
+  //good
 	UserDepartment.destroy({where: {departmentId: req.params.id}})
 	.then(()=> {
 		return Department.destroy({where: {id: req.params.id}});	

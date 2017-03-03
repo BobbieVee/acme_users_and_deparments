@@ -1,12 +1,14 @@
 const db = require('./db')
 const chalk = require('chalk');
 const Sequelize = db.Sequelize;
+//put your classes in separate files
 
 const User = db.define('user', {
 	name: Sequelize.STRING
 }, {
 	instanceMethods: {
 		getDepartments: function(){
+      //you shouldn't need to do this.. you can do an an include of the user departments include
 			let depts =[];
 			this.user_departments.forEach(function(dept){
 				depts.push(dept.department.get());
@@ -68,9 +70,12 @@ const getUser = (id)=> {
 	});
 };
 
+//Bobby-- what I like-- logic is out of routes.. that's great..
+//what I don't like-- presentation logic - colors probably shouldn't be here...
 const getAll = ()=> {
 	let depts;
 	let users;
+  //you should use Promise.all()
 	return Department.findAll()
 	.then((_depts)=> {
 		depts = _depts;
@@ -95,7 +100,7 @@ const getAll = ()=> {
 				user.color = '';
 			}
 		});
-		return {'users': users, 'depts': depts};
+		return {users, depts};
 	});
 };
 
